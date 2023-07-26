@@ -1,1 +1,1 @@
-This is 0x00. Pascal's Triangle README.md
+This is for Techincal Job Interview README.md
