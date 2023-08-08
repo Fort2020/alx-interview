@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-"""a method that calculates the fewest number of operations
+"""a method that calculates
+the fewest number of operations
 """
 
 
