@@ -1,11 +1,10 @@
 #!/usr/bin/python3
-"""a method that calculates
-the fewest number of operations
+"""a method that calculates fewest number of operations
 """
 
 
 def minOperations(n: int) -> int:
-    """ minimum Operations needed to get n H characters """
+    """minimum Operations needed to get n H characters"""
     next = 'H'
     body = 'H'
     op = 0
