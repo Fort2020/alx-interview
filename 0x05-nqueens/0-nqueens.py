@@ -1,96 +1,73 @@
-"""0-nqueens module that solves the N queens problem
-"""
+#!/usr/bin/python3
+""" 0-nqueens module that solves the N queens problem """
 import sys
 
 
-def nqueens(num):
-    """nqueens function that solves the N queens problem
+class NQueen:
+    """ Class for solving N Queen Problem """
 
-    Args:
-        num (int): number of queens
-    """
-    board = [[0 for x in range(num)] for y in range(num)]
-    solve_nqueens(board, 0, num)
+    def __init__(self, n):
+        """ Global Variables """
+        self.n = n
+        self.x = [0 for i in range(n + 1)]
+        self.res = []
 
+    def place(self, k, i):
+        """ Checks if k Queen can be placed in i column (True)
+        or if the are attacking queens in row or diagonal (False)
+        """
 
-def solve_nqueens(board, col, num):
-    """solve_nqueens function that solves the N queens problem
+        # j checks from 1 to k - 1 (Up to previous queen)
+        for j in range(1, k):
+            # There is already a queen in column
+            # or a queen in same diagonal
+            if self.x[j] == i or \
+               abs(self.x[j] - i) == abs(j - k):
+                return 0
+        return 1
 
-    Args:
-        board (list): board list
-        col (int): column number
-        num (int): number of queens in board
-
-    Returns:
-        bool: True if safe, False otherwise
-    """
-    if col == num:
-        print_board(board)
-        return True
-
-    res = False
-    for i in range(num):
-        if is_safe(board, i, col, num):
-            board[i][col] = 1
-            res = solve_nqueens(board, col + 1, num) or res
-            board[i][col] = 0
-    return res
-
-
-def is_safe(board, row, col, num):
-    """is_safe function that checks if a queen can be placed on board
-
-    Args:
-        board (list): board list
-        row (int): row number
-        col (int): column number
-        num (int): number of queens in board
-
-    Returns:
-        bool: True if safe, False otherwise
-    """
-    safe_row = row
-    safe_col = col
-    while safe_col >= 0 and safe_row < num:
-        if board[safe_row][safe_col] == 1:
-            return False
-        safe_row += 1
-        safe_col -= 1
-
-    safe_row = row
-    safe_col = col
-    while safe_row >= 0 and safe_col >= 0:
-        if board[safe_row][safe_col] == 1:
-            return False
-        safe_row -= 1
-        safe_col -= 1
-
-    for i in range(col):
-        if board[row][i] == 1:
-            return False
-    return True
+    def nQueen(self, k):
+        """ Tries to place every queen in the board
+        Args:
+        k: starting queen from which to evaluate (should be 1)
+        """
+        # i goes from column 1 to column n (1st column is 1st index)
+        for i in range(1, self.n + 1):
+            if self.place(k, i):
+                # Queen can be placed in i column
+                self.x[k] = i
+                if k == self.n:
+                    # Placed all 4 Queens (A solution was found)
+                    solution = []
+                    for i in range(1, self.n + 1):
+                        solution.append([i - 1, self.x[i] - 1])
+                    self.res.append(solution)
+                else:
+                    # Need to place more Queens
+                    self.nQueen(k + 1)
+        return self.res
 
 
-def print_board(board):
-    """print_board function that prints the board
+# Main
 
-    Args:
-        board (list): board list
-    """
-    print([[i, j] for i in range(
-        len(board)) for j in range(len(board)) if board[i][j] == 1])
+if len(sys.argv) != 2:
+    print("Usage: nqueens N")
+    sys.exit(1)
 
+N = sys.argv[1]
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: nqueens N")
-        sys.exit(1)
-    try:
-        NUM = int(sys.argv[1])
-        if NUM < 4:
-            print("N must be at least 4")
-            sys.exit(1)
-        nqueens(NUM)
-    except ValueError:
-        print("N must be a number")
-        sys.exit(1)
+try:
+    N = int(N)
+except ValueError:
+    print("N must be a number")
+    sys.exit(1)
+
+if N < 4:
+    print("N must be at least 4")
+    sys.exit(1)
+
+queen = NQueen(N)
+res = queen.nQueen(1)
+
+for i in res:
+    print(i)
