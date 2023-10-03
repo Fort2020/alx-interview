@@ -1,57 +1,61 @@
 #!/usr/bin/python3
-"""prime game module"""
+"""prime game module
+"""
 
 
-def isWinner(x, nums):
-    """function to get winner of the prime game"""
-    mariaWinsCount = 0
-    benWinsCount = 0
+def isPrime(n):
+    """determine if a number is prime
 
-    for num in nums:
-        roundsSet = list(range(1, num + 1))
-        primesSet = primes_in_range(1, num)
+    Args:
+        n (int): number to check
 
-        if not primesSet:
-            benWinsCount += 1
-            continue
-
-        isMariaTurns = True
-
-        while(True):
-            if not primesSet:
-                if isMariaTurns:
-                    benWinsCount += 1
-                else:
-                    mariaWinsCount += 1
-                break
-
-            smallestPrime = primesSet.pop(0)
-            roundsSet.remove(smallestPrime)
-
-            roundsSet = [x for x in roundsSet if x % smallestPrime != 0]
-
-            isMariaTurns = not isMariaTurns
-
-    if mariaWinsCount > benWinsCount:
-        return "Winner: Maria"
-
-    if mariaWinsCount < benWinsCount:
-        return "Winner: Ben"
-
-    return None
-
-
-def is_prime(n):
-    """returns True if n is prime, else False."""
+    Returns:
+        bool: True if n is prime, False
+    """
     if n < 2:
         return False
-    for i in range(2, int(n ** 0.5) + 1):
-        if n % i == 0:
+    for i in range(2, n):
+        if n % i == 0 and i != n:
             return False
     return True
 
 
-def primes_in_range(start, end):
-    """returns a list of prime numbers between start and end (inclusive)."""
-    primes = [n for n in range(start, end+1) if is_prime(n)]
-    return primes
+def primes(n):
+    """return a list of prime numbers
+
+    Args:
+        n (int): number to check
+
+    Returns:
+        list: list of prime numbers
+    """
+    prime = []
+    for i in range(2, n + 1):
+        if isPrime(i) and i ** 2 not in prime:
+            prime.append(i)
+    return prime
+
+
+def isWinner(x, nums):
+    """determine whoo the winner of each game is
+
+    Args:
+        x (int): number of rounds
+        nums (list[int]): array of n
+
+    Returns:
+        str: name of the player that won the most rounds
+    """
+    if x is None or nums is None or x == 0 or nums == []:
+        return None
+    maria, ben = 0, 0
+    for i in range(x):
+        prime = primes(nums[i])
+        if len(prime) % 2 == 0:
+            ben += 1
+        else:
+            maria += 1
+    if ben == maria:
+        return None
+
+    return "Maria" if maria > ben else "Ben"
