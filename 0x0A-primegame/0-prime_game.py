@@ -1,61 +1,29 @@
 #!/usr/bin/python3
-"""prime game module
-"""
-
-
-def isPrime(n):
-    """determine if a number is prime
-
-    Args:
-        n (int): number to check
-
-    Returns:
-        bool: True if n is prime, False
-    """
-    if n < 2:
-        return False
-    for i in range(2, n):
-        if n % i == 0 and i != n:
-            return False
-    return True
-
-
-def primes(n):
-    """return a list of prime numbers
-
-    Args:
-        n (int): number to check
-
-    Returns:
-        list: list of prime numbers
-    """
-    prime = []
-    for i in range(2, n + 1):
-        if isPrime(i) and i ** 2 not in prime:
-            prime.append(i)
-    return prime
-
+""" prime game module """
 
 def isWinner(x, nums):
-    """determine whoo the winner of each game is
-
-    Args:
-        x (int): number of rounds
-        nums (list[int]): array of n
-
-    Returns:
-        str: name of the player that won the most rounds
-    """
-    if x is None or nums is None or x == 0 or nums == []:
+    """function that checks for the winner"""
+    if not nums or x < 1:
         return None
-    maria, ben = 0, 0
-    for i in range(x):
-        prime = primes(nums[i])
-        if len(prime) % 2 == 0:
-            ben += 1
-        else:
-            maria += 1
-    if ben == maria:
-        return None
+    max_num = max(nums)
 
-    return "Maria" if maria > ben else "Ben"
+    my_filter = [True for _ in range(max(max_num + 1, 2))]
+    for i in range(2, int(pow(max_num, 0.5)) + 1):
+        if not my_filter[i]:
+            continue
+        for j in range(i * i, max_num + 1, i):
+            my_filter[j] = False
+    my_filter[0] = my_filter[1] = False
+    y = 0
+    for i in range(len(my_filter)):
+        if my_filter[i]:
+            y += 1
+        my_filter[i] = y
+    player1 = 0
+    for x in nums:
+        player1 += my_filter[x] % 2 == 1
+    if player1 * 2 == len(nums):
+        return None
+    if player1 * 2 > len(nums):
+        return "Maria"
+    return "Ben"
